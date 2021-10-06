@@ -7,6 +7,6 @@ General high priority todo list:
 3. Somehow manage to create multiple games at once and select the best one to store, it would be nice if we could display it.
 
 If we have plenty of time after the completion of all other tasks:
-1. Create to snakes in one game and make them compete against each other.
+1. Create two snakes in one game and make them compete against each other.
 
 Additional and specific ideas can be found in the corresponding folders.
