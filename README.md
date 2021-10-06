@@ -1,4 +1,5 @@
 Uni project.
+
 Three slightly different versions of the game Snake contorlled by AI.
 
 We have 4 more todo assumtions:
