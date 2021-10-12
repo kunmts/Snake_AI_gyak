@@ -1,0 +1,25 @@
+# zárójelek teljesen vakon
+head = game.snake[0]
+n = 5
+right_view = []
+for i in range(1, n + 1):
+    for j in range(1, 2*i):
+        right_view.append(Point(head.x + i*20, head.y + (math.floor((-1)**j*((j-1)/2)) * 20)))
+
+left_view = []
+for i in range(1, n + 1):
+    for j in range(1, 2*i):
+        left_view.append(Point(head.x - i*20, head.y + (math.floor((-1)**j*((j-1)/2)) * 20)))
+
+up_view = []
+for i in range(1, n + 1):
+    for j in range(1, 2*i):
+        up_view.append(Point(head.x + (math.floor((-1)**j*((j-1)/2)) * 20)), head.y - i*20 )))
+
+down_view = []
+for i in range(1, n):
+    for j in range(1, 2*i):
+        down_view.append(Point(head.x + (math.floor((-1)**j*((j-1)/2)) * 20)), head.y + i*20 )))
+
+
+

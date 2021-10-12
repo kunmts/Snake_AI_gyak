@@ -1,0 +1,47 @@
+head = game.snake[0]
+n = 5
+
+# Up line 
+up_line = []
+for i in range(1, n + 1):
+    up_line.append(Point(head.x, head.y - i * 20))
+
+# Down line 
+down_line = []
+for i in range(1, n + 1):
+    down_line.append(Point(head.x, head.y + i * 20))
+
+# Left line 
+left_line = []
+for i in range(1, n + 1):
+    left_line.append(Point(head.x - i * 20, head.y))
+
+# Right line 
+right_line = []
+for i in range(1, n + 1):
+    right_line.append(Point(head.x + i *20, head.y))
+
+# Up-right rectangle
+up_right = []
+for i in range(1, n + 1):
+    for j in range(1, n + 1):
+	up_right.append(Point(head.x + i * 20, head.y - i * 20))
+
+# Up-left rectangle
+up_left = []
+for i in range(1, n + 1):
+    for j in range(1, n + 1):
+	up_left.append(Point(head.x - i * 20, head.y - i * 20))
+
+# Down-left rectangle
+down_left = []
+for i in range(1, n + 1):
+    for j in range(1, n + 1):
+	down_left.append(Point(head.x - i * 20, head.y + i * 20))
+
+# Down-right rectangle
+down_right = []
+for i in range(1, n + 1):
+    for j in range(1, n + 1):
+	down_right.append(Point(head.x + i * 20, head.y + i * 20))
+
