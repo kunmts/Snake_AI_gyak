@@ -1,0 +1,117 @@
+        
+        #Adding points
+
+        point_l = Point(head.x - 20, head.y)
+        point_r = Point(head.x + 20, head.y)
+        point_u = Point(head.x, head.y - 20)
+        point_d = Point(head.x, head.y + 20)
+
+        point_2l = Point(head.x - 40, head.y)
+        point_2r = Point(head.x + 40, head.y)
+        point_2u = Point(head.x, head.y - 40)
+        point_2d = Point(head.x, head.y + 40)
+        
+        point_3l = Point(head.x - 60, head.y)
+        point_3r = Point(head.x + 60, head.y)
+        point_3u = Point(head.x, head.y - 60)
+        point_3d = Point(head.x, head.y + 60)
+        
+        point_4l = Point(head.x - 80, head.y)
+        point_4r = Point(head.x + 80, head.y)
+        point_4u = Point(head.x, head.y - 80)
+        point_4d = Point(head.x, head.y + 80)
+        
+        point_5l = Point(head.x - 100, head.y)
+        point_5r = Point(head.x + 100, head.y)
+        point_5u = Point(head.x, head.y - 100)
+        point_5d = Point(head.x, head.y + 100)
+
+	    # Danger straight 1
+	    (dir_r and game.is_collision(point_r)) or 
+            (dir_l and game.is_collision(point_l)) or 
+            (dir_u and game.is_collision(point_u)) or 
+            (dir_d and game.is_collision(point_d)),
+            
+            # Danger straight 2            
+            (dir_r and game.is_collision(point_2r)) or 
+            (dir_l and game.is_collision(point_2l)) or 
+            (dir_u and game.is_collision(point_2u)) or 
+            (dir_d and game.is_collision(point_2d)),
+
+            # Danger straight 3
+            (dir_r and game.is_collision(point_3r)) or 
+            (dir_l and game.is_collision(point_3l)) or 
+            (dir_u and game.is_collision(point_3u)) or 
+            (dir_d and game.is_collision(point_3d)),
+            
+            # Danger straight 4
+            (dir_r and game.is_collision(point_4r)) or 
+            (dir_l and game.is_collision(point_4l)) or 
+            (dir_u and game.is_collision(point_4u)) or 
+            (dir_d and game.is_collision(point_4d)),
+            
+            # Danger straight 5
+            (dir_r and game.is_collision(point_5r)) or 
+            (dir_l and game.is_collision(point_5l)) or 
+            (dir_u and game.is_collision(point_5u)) or 
+            (dir_d and game.is_collision(point_5d)),
+
+           # Danger right 1
+            (dir_u and game.is_collision(point_r)) or 
+            (dir_d and game.is_collision(point_l)) or 
+            (dir_l and game.is_collision(point_u)) or 
+            (dir_r and game.is_collision(point_d)),
+
+            # Danger right 2
+            (dir_u and game.is_collision(point_2r)) or 
+            (dir_d and game.is_collision(point_2l)) or 
+            (dir_l and game.is_collision(point_2u)) or 
+            (dir_r and game.is_collision(point_2d)),
+            
+            # Danger right 3
+            (dir_u and game.is_collision(point_3r)) or 
+            (dir_d and game.is_collision(point_3l)) or 
+            (dir_l and game.is_collision(point_3u)) or 
+            (dir_r and game.is_collision(point_3d)),
+            
+            # Danger right 4
+            (dir_u and game.is_collision(point_4r)) or 
+            (dir_d and game.is_collision(point_4l)) or 
+            (dir_l and game.is_collision(point_4u)) or 
+            (dir_r and game.is_collision(point_4d)),
+            
+            # Danger right 5
+            (dir_u and game.is_collision(point_5r)) or 
+            (dir_d and game.is_collision(point_5l)) or 
+            (dir_l and game.is_collision(point_5u)) or 
+            (dir_r and game.is_collision(point_5d)),
+
+            # Danger left 1
+            (dir_d and game.is_collision(point_r)) or 
+            (dir_u and game.is_collision(point_l)) or 
+            (dir_r and game.is_collision(point_u)) or 
+            (dir_l and game.is_collision(point_d)),
+
+            # Danger left 2
+            (dir_d and game.is_collision(point_2r)) or 
+            (dir_u and game.is_collision(point_2l)) or 
+            (dir_r and game.is_collision(point_2u)) or 
+            (dir_l and game.is_collision(point_2d)),
+            
+            # Danger left 3
+            (dir_d and game.is_collision(point_3r)) or 
+            (dir_u and game.is_collision(point_3l)) or 
+            (dir_r and game.is_collision(point_3u)) or 
+            (dir_l and game.is_collision(point_3d)),
+            
+            # Danger left 4
+            (dir_d and game.is_collision(point_4r)) or 
+            (dir_u and game.is_collision(point_4l)) or 
+            (dir_r and game.is_collision(point_4u)) or 
+            (dir_l and game.is_collision(point_4d)),
+            
+            # Danger left 5
+            (dir_d and game.is_collision(point_5r)) or 
+            (dir_u and game.is_collision(point_5l)) or 
+            (dir_r and game.is_collision(point_5u)) or 
+            (dir_l and game.is_collision(point_5d)),

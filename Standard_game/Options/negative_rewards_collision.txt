@@ -1,0 +1,33 @@
+    def is_self_collision(self, pt = None):
+        if pt is None:
+            pt = self.head
+        # hits itself
+        if pt in self.snake[1:]:
+            return True
+
+        return False
+    
+    def is_border_collision(self, pt = None):
+        if pt is None:
+            pt = self.head
+        # hits boundary
+        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt.y < 0:
+            return True
+    # Manhattan distance
+    distance = abs(self.head.x - self.food.x) + abs(self.head.y - self.food.y)
+
+    if self.is_border_collision():
+	game_over = True
+        reward = -10
+        return reward, game_over, self.score
+	
+    if self.is_self_collision():
+	game_over = True
+        reward = -15
+        return reward, game_over, self.score
+
+
+    if self.frame_iteration > 100*len(self.snake):
+	game_over = True
+        reward = -15
+        return reward, game_over, self.score

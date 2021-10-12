@@ -1,0 +1,6 @@
+if self.head == self.food:
+            reward = 10 + self.score
+            self.score += 1
+            self._place_food()
+        else:
+            self.snake.pop()

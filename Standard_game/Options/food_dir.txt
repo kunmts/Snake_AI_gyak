@@ -1,0 +1,17 @@
+	    # Food straight
+            (dir_r and game.food.x > game.head.x) or 
+            (dir_l and game.food.x < game.head.x) or 
+            (dir_u and game.food.y < game.head.y) or 
+            (dir_d and game.food.y > game.head.y),
+
+            # Food right
+            (dir_u and game.food.x > game.head.x) or 
+            (dir_d and game.food.x < game.head.x) or 
+            (dir_l and game.food.y < game.head.y) or 
+            (dir_r and game.food.y > game.head.y),
+
+            # Food left
+            (dir_d and game.food.x > game.head.x) or 
+            (dir_u and game.food.x < game.head.x) or 
+            (dir_r and game.food.y < game.head.y) or 
+            (dir_l and game.food.y > game.head.y),

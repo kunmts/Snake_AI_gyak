@@ -1,0 +1,82 @@
+        n = 5
+        
+        left_from_head = []
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                left_from_head.append(Point(int(head.x - (i * 20)), int(head.y) + (math.floor((-1)**j*((j-1)/2)) * 20)))
+                
+        right_from_head = []
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                right_from_head.append(Point(int(head.x + (i * 20)), int(head.y) + (math.floor((-1)**j*((j-1)/2)) * 20)))        
+                
+        up_from_head = []
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                up_from_head.append(Point(int(head.x + (math.floor((-1)**j*((j-1)/2)) * 20)), int(head.y) - (i * 20)))
+                
+        down_from_head = []
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                down_from_head.append(Point(int(head.x + (math.floor((-1)**j*((j-1)/2)) * 20)), int(head.y) + (i * 20)))
+        
+        collision_left = False     
+        for i in left_from_head:
+            if game.is_collision(i):
+                collision_left = True
+                break
+ 
+        collision_right = False
+        for i in right_from_head:
+            if game.is_collision(i):
+                collision_right = True
+                break     
+        
+        collision_up = False
+        for i in up_from_head:
+            if game.is_collision(i):
+                collision_up = True
+                break     
+                
+        collision_down = False
+        for i in down_from_head:
+            if game.is_collision(i):
+                collision_down = True
+                break 
+
+	#STATES
+            # Near collision left
+            dir_l and collision_down,
+            dir_d and collision_right,
+            dir_r and collision_up,
+            dir_u and collision_left,
+            
+            # Near collision straight
+            dir_l and collision_left,
+            dir_d and collision_down,
+            dir_r and collision_right,
+            dir_u and collision_up,
+            
+            # Near collision right
+            dir_l and collision_up,
+            dir_d and collision_left,
+            dir_r and collision_down,
+            dir_u and collision_right
+
+            # Near food left
+            dir_l and game.food in down_from_head,
+            dir_d and game.food in right_from_head,
+            dir_r and game.food in up_from_head,
+            dir_u and game.food in left_from_head,
+            
+            # Near food straight
+            dir_l and game.food in left_from_head,
+            dir_d and game.food in down_from_head,
+            dir_r and game.food in right_from_head,
+            dir_u and game.food in up_from_head,
+            
+            # Near food right
+            dir_l and game.food in up_from_head,
+            dir_d and game.food in left_from_head,
+            dir_r and game.food in down_from_head,
+            dir_u and game.food in right_from_head
