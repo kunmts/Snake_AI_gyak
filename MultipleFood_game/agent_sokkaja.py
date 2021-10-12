@@ -1,30 +1,23 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct  6 08:47:33 2021
-
-@author: Matyi
-"""
-
 import torch
 import random
 import numpy as np
 from collections import deque
 from game_for_agent_sokkaja import SnakeGameAI, Direction, Point
 from model import Linear_QNet, QTrainer
-from helper_or_plotter import plot
+from plotter import plot
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
-LR = 0.005
+LR = 0.0005 # 0.005
 
 class Agent:
 
     def __init__(self):
         self.n_games = 0
         self.epsilon = 0 # randomness
-        self.gamma = 0.9 # discount rate
+        self.gamma = 0.8 # discount rate 0.9
         self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-        self.model = Linear_QNet(11, 256, 3)
+        self.model = Linear_QNet(15, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
 
@@ -66,10 +59,15 @@ class Agent:
             dir_d,
             
             # Food location 
-            game.food.x < game.head.x or game.food2.x < game.head.x,  # food left
-            game.food.x > game.head.x or game.food2.x > game.head.x,  # food right
-            game.food.y < game.head.y or game.food2.y < game.head.y,  # food up
-            game.food.y > game.head.y or game.food2.y > game.head.y,  # food down
+            game.food.x < game.head.x,  # food left
+            game.food.x > game.head.x,  # food right
+            game.food.y < game.head.y,  # food up
+            game.food.y > game.head.y,  # food down
+            
+            game.food2.x < game.head.x, # food2 left
+            game.food2.x > game.head.x, # food2 right
+            game.food2.y < game.head.y, # food2 up
+            game.food2.y > game.head.y, # food2 down
             ]
 
         return np.array(state, dtype=int)
@@ -95,7 +93,7 @@ class Agent:
         # random moves: tradeoff exploration / exploitation
         self.epsilon = 80 - self.n_games
         final_move = [0,0,0]
-        if random.randint(0, 200) < self.epsilon:
+        if random.randint(0, 200) < self.epsilon: # itt esetleg meg lehetne növelni 250-re
             move = random.randint(0, 2)
             final_move[move] = 1
         else:

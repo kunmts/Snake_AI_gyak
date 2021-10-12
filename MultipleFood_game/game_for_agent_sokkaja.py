@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct  6 08:48:06 2021
-
-@author: Matyi
-"""
-
 import pygame
 import random
 from enum import Enum
@@ -29,9 +22,12 @@ RED = (200,0,0)
 BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
+GREEN1 = (0,100,0)
+GREEN2 = (0,128,0)
+GOLD = (255,215,0)
 
 BLOCK_SIZE = 20
-SPEED = 40
+SPEED = 100
 
 class SnakeGameAI:
 
@@ -79,6 +75,7 @@ class SnakeGameAI:
             self._place_food2()
 
 
+
     def play_step(self, action):
         self.frame_iteration += 1
         # 1. collect user input
@@ -93,20 +90,25 @@ class SnakeGameAI:
         
         # 3. check if game over
         reward = 0
+        c1=0 #food2 reward növelése, ha az egyik ha a food1-t megeszi
+        c2=0 #food1 reward növelése, ha az egyik ha a food2-t megeszi
         game_over = False
         if self.is_collision() or self.frame_iteration > 100*len(self.snake):
             game_over = True
-            reward = -50
+            reward = -10
             return reward, game_over, self.score
 
         # 4. place new food or just move
+        
         if self.head == self.food:
             self.score += 1
-            reward = 50
+            c1+=1 #food2 reward növelése, ha az egyik ha a food1-t megeszi
+            reward = 10+c2
             self._place_food()
         elif self.head == self.food2:
             self.score += 1
-            reward = 50
+            c2+=1 #food1 reward növelése, ha az egyik ha a food2-t megeszi
+            reward = 10+c1
             self._place_food2()
         else:
             self.snake.pop()
@@ -135,11 +137,11 @@ class SnakeGameAI:
         self.display.fill(BLACK)
 
         for pt in self.snake:
-            pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
-            pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
+            pygame.draw.rect(self.display, GREEN1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+            pygame.draw.rect(self.display, GREEN2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
 
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
-        pygame.draw.rect(self.display, RED, pygame.Rect(self.food2.x, self.food2.y, BLOCK_SIZE, BLOCK_SIZE))
+        pygame.draw.rect(self.display, GOLD, pygame.Rect(self.food2.x, self.food2.y, BLOCK_SIZE, BLOCK_SIZE))
 
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
