@@ -1,0 +1,193 @@
+import pygame
+import random
+from enum import Enum
+from collections import namedtuple
+import numpy as np
+import os
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
+pygame.init()
+font = pygame.font.SysFont('arial', 25)
+
+class Direction(Enum):
+    RIGHT = 1
+    LEFT = 2
+    UP = 3
+    DOWN = 4
+
+Point = namedtuple('Point', 'x, y')
+
+# rgb colors
+WHITE = (255, 255, 255)
+RED = (200, 0, 0)
+BLUE1 = (0, 0, 255)
+BLUE2 = (0, 100, 255)
+BLACK = (0, 0, 0)
+GREY = (128, 128, 128)
+
+BLOCK_SIZE = 20
+SPEED = 200
+
+class SnakeGameAI:
+
+    def __init__(self, w=1920, h=1000, wa = 880, ha = 480):
+        self.w = w
+        self.h = h
+        self.wa = wa
+        self.ha = ha
+        self.counter = 1
+        # init display
+        self.display = pygame.display.set_mode((self.w, self.h))
+        pygame.display.set_caption('Snake')
+        self.clock = pygame.time.Clock()
+        self.reset()
+
+
+    def reset(self):
+        # init game state
+        self.direction = Direction.RIGHT
+
+        self.head = Point(self.w/2, self.h/2)
+        self.snake = [self.head]
+
+        self.score = 0
+        self.food = None
+        self._place_food()
+        self.frame_iteration = 0
+
+
+    def _place_food(self):
+        x = random.randint(((self.w-self.wa)/2)//BLOCK_SIZE, ((self.w-self.wa)/2 + self.wa - BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
+        y = random.randint(((self.h-self.ha)/2)//BLOCK_SIZE, ((self.h-self.ha)/2 + self.ha - BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
+        self.food = Point(x, y)
+        if self.food in self.snake:
+            self._place_food()
+
+
+    def play_step(self, action):
+        self.frame_iteration += 1
+        # 1. collect user input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        
+        # 2. move
+        self._move(action) # update the head
+        self.snake.insert(0, self.head)
+        
+        # 3. check if game over
+        reward = 0
+        game_over = False
+        
+        if self.frame_iteration > 100*len(self.snake) or self.is_collision():
+            game_over = True
+#            distance = abs(self.head.x - self.food.x) + abs(self.head.y - self.food.y)
+            reward = -10
+            self.wa = 640
+            self.ha = 480
+            self.counter = 1
+            return reward, game_over, self.score
+            
+        # 4. place new food or just move
+        if self.head == self.food:
+            self.score += 1
+            reward = 10
+            self._place_food()
+        else:
+            self.snake.pop()
+            
+        # Increase playable area size
+        if self.score == self.counter * 10 and self.counter <= 13:
+            self.wa += 40
+            self.ha += 40
+            self.counter += 1
+        
+        # 5. update ui and clock
+        self._update_ui()
+        self.clock.tick(SPEED)
+        # 6. return game over and score
+        return reward, game_over, self.score
+
+
+    def is_self_collision(self, pt = None):
+        if pt is None:
+            pt = self.head
+        # hits itself
+        if pt in self.snake[1:]:
+            return True
+
+        return False
+    
+    def is_border_collision(self, pt = None):
+        if pt is None:
+            pt = self.head
+        # hits boundary
+        if pt.x < (self.w - self.wa)/2  or pt.x > (self.w - self.wa)/2 + self.wa - BLOCK_SIZE or pt.y < (self.h-self.ha)/2 or pt.y > (self.h-self.ha)/2 + self.ha - BLOCK_SIZE:
+            return True
+        
+        return False
+
+    def is_collision(self, pt = None):
+        if pt is None:
+            pt = self.head
+        if(self.is_border_collision(pt) or self.is_self_collision(pt)):
+            return True
+        return False
+    
+    def _update_ui(self):
+        self.display.fill(BLACK)
+#        for i in range(int(((self.w - self.wa)/2)//BLOCK_SIZE), int(((self.w - self.wa)/2 + self.wa - BLOCK_SIZE)//BLOCK_SIZE)):
+#            for j in range(int(((self.h - self.ha)/2)//BLOCK_SIZE), int(((self.h - self.ha)/2 + self.ha - BLOCK_SIZE)//BLOCK_SIZE)):
+#                pygame.draw.rect(self.display, BLACK, pygame.Rect(i*20, j*20, BLOCK_SIZE, BLOCK_SIZE))
+            
+        for i in range(self.h // BLOCK_SIZE):
+            for j in range(int(((self.w-self.wa)/2)//BLOCK_SIZE)):
+                pygame.draw.rect(self.display, GREY, pygame.Rect(j*20, i*20, BLOCK_SIZE, BLOCK_SIZE))
+                pygame.draw.rect(self.display, GREY, pygame.Rect((self.w-self.wa)/2 + self.wa + j*20, i*20, BLOCK_SIZE, BLOCK_SIZE))
+                
+        for i in range(int(((self.h-self.ha)/2)//BLOCK_SIZE)):
+            for j in range(int(((self.w-self.wa)/2)//BLOCK_SIZE), int(((self.w-self.wa)/2 + self.wa)//BLOCK_SIZE)):
+                pygame.draw.rect(self.display, GREY, pygame.Rect(j*20, i*20, BLOCK_SIZE, BLOCK_SIZE))
+                pygame.draw.rect(self.display, GREY, pygame.Rect(j*20, (self.h - self.ha)/2 + self.ha + i*20, BLOCK_SIZE, BLOCK_SIZE))
+                
+        for pt in self.snake:
+            pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+            pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
+
+        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+
+        text = font.render("Score: " + str(self.score), True, WHITE)
+        self.display.blit(text, [0, 0])
+        pygame.display.flip()
+
+
+    def _move(self, action):
+        # [straight, right, left]
+
+        clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
+        idx = clock_wise.index(self.direction)
+
+        if np.array_equal(action, [1, 0, 0]):
+            new_dir = clock_wise[idx] # no change
+        elif np.array_equal(action, [0, 1, 0]):
+            next_idx = (idx + 1) % 4
+            new_dir = clock_wise[next_idx] # right turn r -> d -> l -> u
+        else: # [0, 0, 1]
+            next_idx = (idx - 1) % 4
+            new_dir = clock_wise[next_idx] # left turn r -> u -> l -> d
+
+        self.direction = new_dir
+
+        x = self.head.x
+        y = self.head.y
+        if self.direction == Direction.RIGHT:
+            x += BLOCK_SIZE
+        elif self.direction == Direction.LEFT:
+            x -= BLOCK_SIZE
+        elif self.direction == Direction.DOWN:
+            y += BLOCK_SIZE
+        elif self.direction == Direction.UP:
+            y -= BLOCK_SIZE
+
+        self.head = Point(x, y)
