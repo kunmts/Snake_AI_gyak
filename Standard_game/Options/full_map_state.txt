@@ -1,13 +1,13 @@
 # Sima
 head = game.snake[0]
-        game_map = np.zeros((7,7), np.int16)
+        game_map = np.zeros((12,12), np.int16)
         
         game_map[int(head.x/20), int(head.y/20)] = 3
-        for i in range(6):
+        for i in range(12):
             game_map[i,0] = 2
-            game_map[i,6] = 2            
+            game_map[i,12] = 2            
             game_map[0,i] = 2
-            game_map[6,i] = 2
+            game_map[12,i] = 2
             
         for i in game.snake[1:]:
             game_map[int(i.x/20), int(i.y/20)] = 2
@@ -28,14 +28,14 @@ head = game.snake[0]
 
 # Külön collision
 head = game.snake[0]
-        game_map = np.zeros((7,7), np.int16)
+        game_map = np.zeros((12,12), np.int16)
         
         game_map[int(head.x/20), int(head.y/20)] = 3
-        for i in range(6):
+        for i in range(12):
             game_map[i,0] = 5
-            game_map[i,6] = 5            
+            game_map[i,12] = 5            
             game_map[0,i] = 5
-            game_map[6,i] = 5
+            game_map[12,i] = 5
             
         for i in game.snake[1:]:
             game_map[int(i.x/20), int(i.y/20)] = 2
@@ -54,7 +54,7 @@ head = game.snake[0]
     
         return np.array(state, dtype=int)
         # szomszédok a számozást szinkronizálni kell és ezt a test megadása után és a border megadása előtt kell használni
-        for i in range(1,5):
-            for j in range(1,5):
+        for i in range(1,11):
+            for j in range(1,11):
                 if game_map[i-1, j] == 2 or game_map[i+1, j] == 2 or game_map[i, j-1] == 2 or game_map[i, j+1] == 2:
                     game_map[i,j] = 6
