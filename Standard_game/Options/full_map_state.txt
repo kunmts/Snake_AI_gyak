@@ -1,3 +1,4 @@
+# Sima
 head = game.snake[0]
         game_map = np.zeros((7,7), np.int16)
         
@@ -24,3 +25,32 @@ head = game.snake[0]
         state = game_map_list + direction_list     
     
         return np.array(state, dtype=int)
+
+# Külön collision
+head = game.snake[0]
+        game_map = np.zeros((7,7), np.int16)
+        
+        game_map[int(head.x/20), int(head.y/20)] = 3
+        for i in range(6):
+            game_map[i,0] = 5
+            game_map[i,6] = 5            
+            game_map[0,i] = 5
+            game_map[6,i] = 5
+            
+        for i in game.snake[1:]:
+            game_map[int(i.x/20), int(i.y/20)] = 2
+            
+        game_map[int(game.food.x/20), int(game.food.y/20)] = 4
+        
+        dir_l = Direction.LEFT  == game.direction
+        dir_r = Direction.RIGHT == game.direction
+        dir_u = Direction.UP == game.direction
+        dir_d = Direction.DOWN == game.direction
+        
+        game_map_list = game_map.flatten().tolist()
+        direction_list = [dir_l, dir_r, dir_u, dir_d]
+        
+        state = game_map_list + direction_list     
+    
+        return np.array(state, dtype=int)
+        
