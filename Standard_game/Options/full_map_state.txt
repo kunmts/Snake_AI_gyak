@@ -1,16 +1,26 @@
-	game_map = np.zeros((32, 24), np.int16) 
-        head = game.snake[0]
-        if head.x > 0 and head.y > 0 and head.x <= (game.w - 20)/20 and head.y <= (game.h - 20)/20:
-            game_map[int(head.x/20), int(head.y/20)] = 3
+head = game.snake[0]
+        game_map = np.zeros((7,7), np.int16)
+        
+        game_map[int(head.x/20), int(head.y/20)] = 2
+        for i in range(6):
+            game_map[i,0] = 1
+            game_map[i,6] = 1            
+            game_map[0,i] = 1
+            game_map[6,i] = 1
+            
         for i in game.snake[1:]:
             game_map[int(i.x/20), int(i.y/20)] = 1
-        game_map[int(game.food.x/20), int(game.food.y/20)] = 2
+            
+        game_map[int(game.food.x/20), int(game.food.y/20)] = 3
+        
+        dir_l = Direction.LEFT  == game.direction
+        dir_r = Direction.RIGHT == game.direction
+        dir_u = Direction.UP == game.direction
+        dir_d = Direction.DOWN == game.direction
         
         game_map_list = game_map.flatten().tolist()
+        direction_list = [dir_l, dir_r, dir_u, dir_d]
         
-        dir_l = Direction.LEFT
-        dir_r = Direction.RIGHT
-        dir_u = Direction.UP
-        dir_d = Direction.DOWN
-
-        state = game_map_list + [dir_l == game.direction, dir_r == game.direction, dir_u == game.direction, dir_d == game.direction]
+        state = game_map_list + direction_list     
+    
+        return np.array(state, dtype=int)
