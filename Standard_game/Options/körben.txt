@@ -1,0 +1,29 @@
+def get_state(self, game):
+        DIST = 11 # has to be odd
+        DISTFEL = (DIST-1)/2        
+        head = game_plus.snake[0]
+        area = np.zeros((DIST,DIST), np.int16)
+        area[DISTFEL,DISTFEL] = 5 #head
+        
+        for i in range(DIST):
+            for j in range(DIST):
+                point = Point(head.x - (DISTFEL*BLOCK_SIZE) + (i*BLOCK_SIZE), head.y - (DISTFEL*BLOCK_SIZE) + (j*BLOCK_SIZE))
+                if game_plus.is_collision(point):
+                    area[i,j] = 50
+                elif point == game_plus.food:
+                    area[i,j] = 100
+                else:
+                    area[i,j] = 10
+        
+        
+        dir_l = Direction.LEFT  == game.direction
+        dir_r = Direction.RIGHT == game.direction
+        dir_u = Direction.UP == game.direction
+        dir_d = Direction.DOWN == game.direction
+        
+        area_list = area.flatten().tolist()
+        direction_list = [dir_l, dir_r, dir_u, dir_d]
+        
+        state = area_list + direction_list     
+    
+        return np.array(state, dtype=int)
