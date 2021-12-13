@@ -2,13 +2,14 @@ import torch
 import random
 import numpy as np
 from collections import deque
-from game import SnakeGameAI, Direction, Point
+from game_for_agent import SnakeGameAI, Direction, Point
 from model import Linear_QNet, QTrainer
-from helper import plot
+from plotter import plot
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001
+sajat=True
 
 class Agent:
 
@@ -17,7 +18,14 @@ class Agent:
         self.epsilon = 0 # randomness
         self.gamma = 0.9 # discount rate
         self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-        self.model = Linear_QNet(11, 256, 3)
+        
+        #IF sajat==True --> egy már megtanított paramétereket töltünk be a modelbe további tanításra
+        if sajat==True:
+            self.model = Linear_QNet(11, 256, 3)
+            self.model.load_state_dict(torch.load('./model/eredeti_model.py')) #PATH
+            #self.model.eval()
+        else:
+            self.model = Linear_QNet(11, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
 
@@ -86,7 +94,10 @@ class Agent:
 
     def get_action(self, state):
         # random moves: tradeoff exploration / exploitation
-        self.epsilon = 80 - self.n_games
+        if sajat==True:
+            self.epsilon=0
+        else:
+            self.epsilon = 80 - self.n_games
         final_move = [0,0,0]
         if random.randint(0, 200) < self.epsilon:
             move = random.randint(0, 2)
