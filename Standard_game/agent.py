@@ -4,12 +4,15 @@ import numpy as np
 from collections import deque
 from game_for_agent import SnakeGameAI, Direction, Point
 from model import Linear_QNet, QTrainer
-from plotter import plot
+#from plotter import plot
+import matplotlib.pyplot as plt
+from IPython import display
+
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001
-sajat=True
+sajat=False
 
 class Agent:
 
@@ -21,11 +24,11 @@ class Agent:
         
         #IF sajat==True --> egy már megtanított paramétereket töltünk be a modelbe további tanításra
         if sajat==True:
-            self.model = Linear_QNet(11, 256, 3)
-            self.model.load_state_dict(torch.load('./model/eredeti_model.py')) #PATH
+            self.model = Linear_QNet(10, 256, 3)
+            self.model.load_state_dict(torch.load('./model/food_dir_model.py')) #PATH
             #self.model.eval()
         else:
-            self.model = Linear_QNet(11, 256, 3)
+            self.model = Linear_QNet(10, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
 
@@ -67,10 +70,24 @@ class Agent:
             dir_d,
             
             # Food location 
-            game.food.x < game.head.x,  # food left
-            game.food.x > game.head.x,  # food right
-            game.food.y < game.head.y,  # food up
-            game.food.y > game.head.y  # food down
+            
+            #Food straight
+            (dir_r and game.food.x > game.head.x) or 
+            (dir_l and game.food.x < game.head.x) or 
+            (dir_u and game.food.y < game.head.y) or 
+            (dir_d and game.food.y > game.head.y),
+
+            # Food right
+            (dir_u and game.food.x > game.head.x) or 
+            (dir_d and game.food.x < game.head.x) or 
+            (dir_l and game.food.y < game.head.y) or 
+            (dir_r and game.food.y > game.head.y),
+
+            # Food left
+            (dir_d and game.food.x > game.head.x) or 
+            (dir_u and game.food.x < game.head.x) or 
+            (dir_r and game.food.y < game.head.y) or 
+            (dir_l and game.food.y > game.head.y)
             ]
 
         return np.array(state, dtype=int)
@@ -110,6 +127,23 @@ class Agent:
 
         return final_move
 
+def plot(scores, mean_scores, save):
+    display.clear_output(wait=True)
+    display.display(plt.gcf())
+    plt.clf()
+    plt.title('Training...')
+    plt.xlabel('Number of Games')
+    plt.ylabel('Score')
+    plt.plot(scores)
+    plt.plot(mean_scores)
+    plt.ylim(ymin=0)
+    plt.text(len(scores)-1, scores[-1], str(scores[-1]))
+    plt.text(len(mean_scores)-1, mean_scores[-1], str(mean_scores[-1]))
+    plt.show(block=False)
+    plt.pause(.1)
+    if save==True:
+        plt.savefig('./model/danger_dir_line_dist_model_kep.png')
+
 
 def train():
     plot_scores = []
@@ -118,7 +152,9 @@ def train():
     record = 0
     agent = Agent()
     game = SnakeGameAI()
-    while True:
+    elso_500=True
+    save=False
+    while elso_500==True:
         # get old state
         state_old = agent.get_state(game)
 
@@ -151,7 +187,14 @@ def train():
             total_score += score
             mean_score = total_score / agent.n_games
             plot_mean_scores.append(mean_score)
-            plot(plot_scores, plot_mean_scores)
+            if agent.n_games == 500:
+                save=True
+                plot(plot_scores, plot_mean_scores, save)
+                elso_500=False
+            else:
+                plot(plot_scores, plot_mean_scores, save)
+
+
 
 
 if __name__ == '__main__':
