@@ -14,7 +14,7 @@ class Linear_QNet(nn.Module):
             nn.MaxPool2d(2),
             #nn.ReLU(),
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=4, stride=1),
-            nn.MaxPool2d(3),
+            #nn.MaxPool2d(3),
             #nn.ReLU(),
             #nn.Conv2d(in_channels=128, out_channels=64, kernel_size=2, stride=1),
             nn.ReLU(),
